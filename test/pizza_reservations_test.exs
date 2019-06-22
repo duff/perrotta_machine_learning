@@ -8,7 +8,10 @@ defmodule PizzaReservationsTest do
   test "train" do
     {pizzas, reservations} = parse_file()
 
-    assert PizzaReservations.train(pizzas, reservations, 10000, 0.01) == 1.84
+    approximate_weight = PizzaReservations.train(pizzas, reservations, 10000, 0.01)
+
+    assert approximate_weight == 1.84
+    assert_in_delta PizzaReservations.predict(20, approximate_weight), 36.8, 0.01
   end
 
   defp parse_file do
