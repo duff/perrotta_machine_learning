@@ -1,17 +1,18 @@
-defmodule PizzaReservationsTest do
+defmodule PizzaReservationsWithBiasTest do
   use ExUnit.Case, async: true
 
   test "predict" do
-    assert PizzaReservations.predict(20, 2.1) == 42
+    assert PizzaReservationsWithBias.predict(20, 2.1, 7) == 49
   end
 
   test "train" do
     {pizzas, reservations} = parse_file()
 
-    approximate_weight = PizzaReservations.train(pizzas, reservations, 10000, 0.01)
+    {approximate_weight, approximate_bias} = PizzaReservationsWithBias.train(pizzas, reservations, 100_000, 0.01)
 
-    assert approximate_weight == 1.84
-    assert_in_delta PizzaReservations.predict(20, approximate_weight), 36.8, 0.01
+    assert approximate_weight == 1.1
+    assert approximate_bias == 12.93
+    assert_in_delta PizzaReservationsWithBias.predict(20, approximate_weight, approximate_bias), 34.93, 0.001
   end
 
   defp parse_file do
