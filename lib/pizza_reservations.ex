@@ -16,7 +16,8 @@ defmodule PizzaReservations do
   end
 
   defp loss(reservations, pizzas, weight) do
-    sum_of_losses(reservations, pizzas, weight) / length(reservations)
+    losses(reservations, pizzas, weight)
+    |> average
   end
 
   defp predictions(reservations, weight) do
@@ -24,10 +25,13 @@ defmodule PizzaReservations do
     |> Enum.map(&predict(&1, weight))
   end
 
-  defp sum_of_losses(reservations, pizzas, weight) do
+  defp losses(reservations, pizzas, weight) do
     predictions(reservations, weight)
     |> Enum.zip(pizzas)
     |> Enum.map(fn {prediction, actual} -> (prediction - actual) |> :math.pow(2) end)
-    |> Enum.sum()
+  end
+
+  defp average(values) do
+    Enum.sum(values) / length(values)
   end
 end
